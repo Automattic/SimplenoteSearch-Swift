@@ -22,4 +22,3 @@ workflows:
   simplenote_foundation:
     jobs:
       - Test
-
