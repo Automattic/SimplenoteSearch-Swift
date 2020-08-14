@@ -15,7 +15,7 @@ jobs:
       - git/shallow-checkout
       - ios/test:
           xcode-version: "11.6.0"
-          scheme: SimplenoteFoundation
+          scheme: SimplenoteSearch
           device: iPhone 11
 
 workflows:
