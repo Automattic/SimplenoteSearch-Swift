@@ -32,6 +32,25 @@ extension NSPredicate {
         return NSCompoundPredicate(andPredicateWithSubpredicates: output)
     }
 
+    /// Returns a NSPredicate that will match a given Keyword in the Note's Title
+    ///
+    /// - Note: The Entity received by the NSPredicate's callback is expected to be a NSManagedObject (OR) a lower level instance.
+    ///         In macOS's scenario, we're receiving an XMLNode (referencing to the underlying CoreData structure).
+    ///         By invoking Value for Key we can extract the Note's Contents in any case. As long as it's a Note entity!
+    ///
+    public static func predicateForNotes(titleText: String) -> NSPredicate {
+        let normalizedKeyword = titleText.folding(options: [.diacriticInsensitive, .caseInsensitive], locale: nil)
+
+        return NSPredicate { entity, _ in
+            guard let note = entity as? NSObject, let content = note.value(forKey: "content") as? String else {
+                return false
+            }
+
+            let title = content.firstLine.folding(options: [.diacriticInsensitive, .caseInsensitive], locale: nil)
+            return title.contains(normalizedKeyword)
+        }
+    }
+
     /// Returns a NSPredicate that will match Notes with the specified `deleted` flag
     ///
     @objc(predicateForNotesWithDeletedStatus:)

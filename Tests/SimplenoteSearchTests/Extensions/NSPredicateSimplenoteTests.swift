@@ -138,6 +138,45 @@ class NSPredicateSimplenoteTests: XCTestCase {
         XCTAssertTrue(predicate.evaluate(with: entity))
     }
 
+    /// Verifies that `predicateForNotes(titleText:)` matches entities that contain the Keyword in their title, regardless of the diacritics
+    ///
+    func testPredicateForNotesWithTitleMatchesEntitiesWithKeywordInTheTitleIgnoringSpecialCharacters() {
+        let entity = MockupNote()
+        entity.content = "Some title with díácrïtīc chårâctërs"
+
+        let predicate = NSPredicate.predicateForNotes(titleText: "diâcritic characters")
+        XCTAssertTrue(predicate.evaluate(with: entity))
+    }
+
+    /// Verifies that `predicateForNotes(titleText:)` matches entities that contain the Keyword in their title, regardless of the case
+    ///
+    func testPredicateForNotesWithTitleMatchesEntitiesWithKeywordInTheTitleIgnoringCase() {
+        let entity = MockupNote()
+        entity.content = "SOME TiTLE HERE"
+
+        let predicate = NSPredicate.predicateForNotes(titleText: "tItle")
+        XCTAssertTrue(predicate.evaluate(with: entity))
+    }
+
+    /// Verifies that `predicateForNotes(titleText:)` does not match entities that contain `keyword` in lines that aren't the first one
+    ///
+    func testPredicateForNotesWithTitleDoesNotMatchKeywordsContainedInLinesThatArentTheFirst() {
+        let entity = MockupNote()
+        entity.content = "Some title here\nkeyword\nkeyword\n\n\nkeyword"
+
+        let predicate = NSPredicate.predicateForNotes(titleText: "keyword")
+        XCTAssertFalse(predicate.evaluate(with: entity))
+    }
+
+    /// Verifies that `predicateForNotes(titleText:)` doesn't crash when the Entity's Contents are nil
+    ///
+    func testPredicateForNotesWithTitleDoesNotCrashOnNilContent() {
+        let entity = MockupNote()
+        let predicate = NSPredicate.predicateForNotes(titleText: "keyword")
+        XCTAssertFalse(predicate.evaluate(with: entity))
+    }
+
+
     /// Verifies that `NSPredicate.predicateForNotes(deleted:)` matches notes with a Deleted status
     ///
     func testPredicateForNotesWithDeletedStatusMatchesDeletedNotes() {
