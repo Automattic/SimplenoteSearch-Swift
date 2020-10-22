@@ -40,6 +40,13 @@ extension NSPredicate {
         return NSPredicate(format: "deleted == %@", status)
     }
 
+    /// Returns a NSPredicate that will perform an exact match of the specified keyword
+    ///
+    @objc
+    public static func predicateForNotes(exactMatch keyword: String) -> NSPredicate {
+        return NSPredicate(format: "content CONTAINS %@", keyword)
+    }
+
     /// Returns a NSPredicate that will match a given Tag
     ///
     @objc
