@@ -85,7 +85,7 @@ extension NSPredicate {
     ///     -   If the `tag:` operator has no actual payload, **every single tag** will be matched (Always True Predicate)
     ///
     @objc
-    public static func predicateForTag(query: SearchQuery) -> NSPredicate {
+    public static func predicateForTags(in query: SearchQuery) -> NSPredicate {
         guard let lastItem = query.items.last else {
             return NSPredicate(value: true)
         }
@@ -109,7 +109,7 @@ extension NSPredicate {
     ///
     @objc
     public static func predicateForTag(keyword: String) -> NSPredicate {
-        return predicateForTag(query: SearchQuery(searchText: keyword))
+        return predicateForTags(in: SearchQuery(searchText: keyword))
     }
 }
 
