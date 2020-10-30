@@ -5,31 +5,34 @@ import Foundation
 //
 extension NSPredicate {
 
-    /// Returns a collection of NSPredicates that will match, as a compound, a given Search Text
+    /// Returns a collection of NSPredicates that will match, as a compound, a given Search Query
     ///
-    @objc(predicateForSearchText:)
-    public static func predicateForNotes(searchText: String) -> NSPredicate {
-        let keywords = searchText.trimmingCharacters(in: .whitespacesAndNewlines).components(separatedBy: .whitespaces)
-        var output = [NSPredicate]()
-
-        for keyword in keywords where keyword.isEmpty == false {
-            guard let tag = keyword.lowercased().suffix(afterPrefix: lowercasedSearchOperatorForTags) else {
-                output.append( NSPredicate(format: "content CONTAINS[cd] %@", keyword) )
-                continue
+    @objc(predicateForSearchQuery:)
+    public static func predicateForNotes(query: SearchQuery) -> NSPredicate {
+        let predicates = query.items.compactMap { (item) -> NSPredicate? in
+            switch item {
+            case .keyword(let value):
+                return NSPredicate(format: "content CONTAINS[cd] %@", value)
+            case .tag(let value):
+                if value.isEmpty {
+                    return nil
+                }
+                return NSPredicate(format: "tags CONTAINS[cd] %@", formattedTag(for: value))
             }
-
-            guard !tag.isEmpty else {
-                continue
-            }
-
-            output.append( NSPredicate(format: "tags CONTAINS[cd] %@", formattedTag(for: tag)) )
         }
 
-        guard !output.isEmpty else {
+        guard !predicates.isEmpty else {
             return NSPredicate(value: true)
         }
 
-        return NSCompoundPredicate(andPredicateWithSubpredicates: output)
+        return NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
+    }
+
+    /// Returns a collection of NSPredicates that will match, as a compound, a given Search Query
+    ///
+    @objc(predicateForSearchText:)
+    public static func predicateForNotes(searchText: String) -> NSPredicate {
+        return predicateForNotes(query: SearchQuery(searchText: searchText))
     }
 
     /// Returns a NSPredicate that will match Notes with the specified `deleted` flag
@@ -74,7 +77,7 @@ extension NSPredicate {
         return NSPredicate(format: "tags MATCHES[n] %@", regex)
     }
 
-    /// Returns a NSPredicate that will match Tags with a given Keyword
+    /// Returns a NSPredicate that will match Tags with a given Query
     ///
     /// -   We'll always analyze the last token in the string
     ///     -   Whenever the last token contains `tag:`, we'll lookup Tags with names containing the payload, excluding exact matches
@@ -82,22 +85,31 @@ extension NSPredicate {
     ///     -   If the `tag:` operator has no actual payload, **every single tag** will be matched (Always True Predicate)
     ///
     @objc
-    public static func predicateForTag(keyword: String) -> NSPredicate {
-        let keywords = keyword.trimmingCharacters(in: .whitespacesAndNewlines).components(separatedBy: .whitespaces)
-        let last = keywords.last?.lowercased() ?? String()
-
-        guard let tag = last.suffix(afterPrefix: lowercasedSearchOperatorForTags) else {
-            return NSPredicate(format: "name CONTAINS[cd] %@", last)
-        }
-
-        guard tag.isEmpty == false else {
+    public static func predicateForTags(in query: SearchQuery) -> NSPredicate {
+        guard let lastItem = query.items.last else {
             return NSPredicate(value: true)
         }
 
-        return NSCompoundPredicate(andPredicateWithSubpredicates: [
-            NSPredicate(format: "name CONTAINS[cd] %@", tag),
-            NSPredicate(format: "name <>[c] %@", tag)
-        ])
+        switch lastItem {
+        case .keyword(let value):
+            return NSPredicate(format: "name CONTAINS[cd] %@", value)
+        case .tag(let value):
+            guard value.isEmpty == false else {
+                return NSPredicate(value: true)
+            }
+
+            return NSCompoundPredicate(andPredicateWithSubpredicates: [
+                NSPredicate(format: "name CONTAINS[cd] %@", value),
+                NSPredicate(format: "name <>[c] %@", value)
+            ])
+        }
+    }
+
+    /// Returns a NSPredicate that will match Tags with a given Keyword
+    ///
+    @objc
+    public static func predicateForTag(keyword: String) -> NSPredicate {
+        return predicateForTags(in: SearchQuery(searchText: keyword))
     }
 }
 
@@ -111,11 +123,5 @@ private extension NSPredicate {
     static func formattedTag(for tag: String) -> String {
         let filtered = tag.replacingOccurrences(of: "\\", with: "\\\\").replacingOccurrences(of: "/", with: "\\/")
         return String(format: "\"%@\"", filtered)
-    }
-
-    /// Search Operator for Tags: Case Insensitive
-    ///
-    static var lowercasedSearchOperatorForTags: String {
-        String.searchOperatorForTags.lowercased()
     }
 }
