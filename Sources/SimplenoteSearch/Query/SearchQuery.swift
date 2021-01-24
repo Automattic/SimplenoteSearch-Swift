@@ -77,3 +77,20 @@ public final class SearchQuery: NSObject {
         return items == object.items
     }
 }
+
+public struct SearchQuerySettings {
+    public let tagsKeyword: String
+    public let localizedTagKeyword: String
+    
+    public init(tagsKeyword: String, localizedTagKeyword: String) {
+        self.tagsKeyword = tagsKeyword
+        self.localizedTagKeyword = localizedTagKeyword
+    }
+}
+
+public extension SearchQuerySettings {
+    static var shared: SearchQuerySettings {
+        SearchQuerySettings(tagsKeyword: "tag:",
+                            localizedTagKeyword: NSLocalizedString("tag:", comment: "Search Operator for tags. Please preserve the semicolons when translating!"))
+    }
+}
