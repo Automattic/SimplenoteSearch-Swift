@@ -68,6 +68,17 @@ public final class SearchQuery: NSObject {
             items.append(.tag(tag))
         }
     }
+    
+    private func checkForTagOrLocalizedTag(with keyword: String) -> String? {
+        if let tag = keyword.lowercased().suffix(afterPrefix: String.searchOperatorForTags.tagsKeyword.lowercased()) {
+            return tag
+        }
+        if let tag = keyword.lowercased().suffix(afterPrefix: String.searchOperatorForTags.localizedTagKeyword.lowercased()) {
+            return tag
+        }
+        
+        return nil
+    }
 
     public override func isEqual(_ object: Any?) -> Bool {
         guard let object = object as? SearchQuery else {
