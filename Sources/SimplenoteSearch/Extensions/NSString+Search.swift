@@ -7,7 +7,7 @@ extension String {
 
     /// Returns the Search Operator we should recognize, when filtering out entities with a given Tag
     ///
-    public static let searchOperatorForTags = NSLocalizedString("tag:", comment: "Search Operator for tags. Please preserve the semicolons when translating!")
+    public static let searchOperatorForTags = SearchQuerySettings.shared
 
 
     /// Returns a space
