@@ -60,11 +60,11 @@ public final class SearchQuery: NSObject {
         let keywords = searchText.trimmingCharacters(in: .whitespacesAndNewlines).components(separatedBy: .whitespaces)
 
         for keyword in keywords where keyword.isEmpty == false {
-            guard let tag = keyword.lowercased().suffix(afterPrefix: String.searchOperatorForTags.lowercased()) else {
+            guard let tag = checkForTagOrLocalizedTag(with: keyword) else {
                 items.append(.keyword(keyword))
                 continue
             }
-
+            
             items.append(.tag(tag))
         }
     }
