@@ -108,6 +108,13 @@ extension NSPredicate {
     /// Returns a NSPredicate that will match Tags with a given Keyword
     ///
     @objc
+    public static func predicateForTag(keyword: String, settings: SearchQuerySettings) -> NSPredicate {
+        return predicateForTags(in: SearchQuery(searchText: keyword, settings: settings))
+    }
+    
+    /// Returns a NSPredicate that will match Tags with a given SearchQuerty
+    ///
+    @objc
     public static func predicateForTag(query: SearchQuery) -> NSPredicate {
         return predicateForTags(in: query)
     }
