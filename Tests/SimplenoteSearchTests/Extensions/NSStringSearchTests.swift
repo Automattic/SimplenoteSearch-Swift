@@ -5,6 +5,8 @@ import SimplenoteSearch
 // MARK: - String Simplenote Unit Tests
 //
 class StringSimplenoteTests: XCTestCase {
+    
+    var searchSettings = SearchQuerySettings(tagsKeyword: "tag:", localizedTagKeyword: NSLocalizedString("tag:", comment: "Search Operator for tags. Please preserve the semicolons when translating!"))
 
     /// Verifies that `replaceLastWord(:)` returns the new word, whenever the receiver was empty
     ///
@@ -35,22 +37,22 @@ class StringSimplenoteTests: XCTestCase {
     ///
     func testSuffixAfterPrefixReturnsNilWheneverTheInputStringLacksSuchPrefix() {
         let sample = "This is a sample of some random string without the tag operator"
-        XCTAssertNil(sample.suffix(afterPrefix: .searchOperatorForTags))
+        XCTAssertNil(sample.suffix(afterPrefix: searchSettings.tagsKeyword))
     }
 
     /// Verifies that Suffix after Prefix returns an empty string, whenever there is no actual Payload
     ///
     func testSuffixAfterPrefixReturnsNilWheneverTheTagSearchOperatorHasAnEmptyKeyword() {
-        let sample = String.searchOperatorForTags
-        XCTAssertEqual(sample.suffix(afterPrefix: .searchOperatorForTags), "")
+        let sample = searchSettings.tagsKeyword
+        XCTAssertEqual(sample.suffix(afterPrefix: searchSettings.tagsKeyword), "")
     }
 
     /// Verifies that Suffix after Prefix returns the payload right after the first occurrence of such suffix
     ///
     func testSuffixAfterPrefixReturnsTheRightHandSideStringAfterTheTagSearchOperator() {
         let expected = "somenameforatag"
-        let sample = String.searchOperatorForTags + expected
+        let sample = searchSettings.tagsKeyword + expected
 
-        XCTAssertEqual(sample.suffix(afterPrefix: .searchOperatorForTags), expected)
+        XCTAssertEqual(sample.suffix(afterPrefix: searchSettings.tagsKeyword), expected)
     }
 }
