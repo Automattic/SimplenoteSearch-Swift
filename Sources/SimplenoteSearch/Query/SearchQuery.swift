@@ -65,23 +65,22 @@ public final class SearchQuery: NSObject {
         let keywords = searchText.trimmingCharacters(in: .whitespacesAndNewlines).components(separatedBy: .whitespaces)
 
         for keyword in keywords where keyword.isEmpty == false {
-            guard let tag = checkForTagOrLocalizedTag(with: keyword) else {
+            guard let tag = extractTagKeyword(from:keyword) else {
                 items.append(.keyword(keyword))
                 continue
             }
-            
             items.append(.tag(tag))
         }
     }
     
-    private func checkForTagOrLocalizedTag(with keyword: String) -> String? {
-        if let tag = keyword.lowercased().suffix(afterPrefix: settings.tagsKeyword.lowercased()) {
-            return tag
-        }
-        if let tag = keyword.lowercased().suffix(afterPrefix: settings.localizedTagKeyword.lowercased()) {
-            return tag
-        }
+    private func extractTagKeyword(from keyword: String) -> String? {
+        let tagPrefixes = [settings.tagsKeyword.lowercased(), settings.localizedTagKeyword.lowercased()]
         
+        for prefix in tagPrefixes {
+            if let tag = keyword.lowercased().suffix(afterPrefix: prefix) {
+                return tag
+            }
+        }
         return nil
     }
 
