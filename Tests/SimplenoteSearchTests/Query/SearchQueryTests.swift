@@ -5,24 +5,26 @@ import SimplenoteSearch
 //
 class SearchQueryTests: XCTestCase {
 
+    var searchSettings = SearchQuerySettings(tagsKeyword: "tag:", localizedTagKeyword: NSLocalizedString("tag:", comment: "Search Operator for tags. Please preserve the semicolons when translating!"))
+    
     /// Verifies that query without a search text is empty
     ///
     func testQueryIsEmptyWhenTextIsEmpty() {
-        let query = SearchQuery(searchText: "")
+        let query = SearchQuery(searchText: "", settings: searchSettings)
         XCTAssertTrue(query.isEmpty)
     }
 
     /// Verifies that query with only spaces and newlines is empty
     ///
     func testQueryIsEmptyWhenTextContainsOnlySpaces() {
-        let query = SearchQuery(searchText: " \n   \n\n  ")
+        let query = SearchQuery(searchText: " \n   \n\n  ", settings: searchSettings)
         XCTAssertTrue(query.isEmpty)
     }
 
     /// Verifies that multiple spaces between keywords are ignored
     ///
     func testQueryIgnoresSpaceBetweenKeywords() {
-        let query = SearchQuery(searchText: "    a      b    ")
+        let query = SearchQuery(searchText: "    a      b    ", settings: searchSettings)
         let expected: [SearchQueryItem] = [
             .keyword("a"),
             .keyword("b"),
@@ -33,7 +35,7 @@ class SearchQueryTests: XCTestCase {
     /// Verifies that keywords are being split by whitespace
     ///
     func testQuerySplitsKeywordsByWhitespace() {
-        let query = SearchQuery(searchText: "a content! pre-lunch, mmmm")
+        let query = SearchQuery(searchText: "a content! pre-lunch, mmmm", settings: searchSettings)
         let expected: [SearchQueryItem] = [
             .keyword("a"),
             .keyword("content!"),
@@ -46,7 +48,7 @@ class SearchQueryTests: XCTestCase {
     /// Verifies that duplicate entries are kept
     ///
     func testQueryKeepsDuplicateKeywords() {
-        let query = SearchQuery(searchText: "a a")
+        let query = SearchQuery(searchText: "a a", settings: searchSettings)
         let expected: [SearchQueryItem] = [
             .keyword("a"),
             .keyword("a")
@@ -57,7 +59,7 @@ class SearchQueryTests: XCTestCase {
     /// Verifies access to all keywords and non-empty tags
     ///
     func testQueryReturnsAllKeywordsAndTags() {
-        let query = SearchQuery(searchText: "a b tag:e tag: tag:f")
+        let query = SearchQuery(searchText: "a b tag:e tag: tag:f", settings: searchSettings)
         let expectedKeywords: [String] = [
             "a",
             "b"
@@ -73,7 +75,7 @@ class SearchQueryTests: XCTestCase {
     /// Verifies tags are extracted from a search text
     ///
     func testQueryExtractsTags() {
-        let query = SearchQuery(searchText: "tag:a tag:b, keyword tag:pre-lunch")
+        let query = SearchQuery(searchText: "tag:a tag:b, keyword tag:pre-lunch", settings: searchSettings)
         let expected: [SearchQueryItem] = [
             .tag("a"),
             .tag("b,"),
@@ -86,7 +88,7 @@ class SearchQueryTests: XCTestCase {
     /// Verifies empty tags are kept
     ///
     func testQueryKeepsEmptyTags() {
-        let query = SearchQuery(searchText: "a b tag:a tag: tag:b")
+        let query = SearchQuery(searchText: "a b tag:a tag: tag:b", settings: searchSettings)
         let expected: [SearchQueryItem] = [
             .keyword("a"),
             .keyword("b"),
