@@ -46,12 +46,17 @@ public final class SearchQuery: NSObject {
             return value
         }
     }
+    
+    /// Localized Tag search operator seach settings
+    ///
+    public var settings: SearchQuerySettings
 
     /// Init with a search text
     ///
     @objc
-    public init(searchText: String) {
+    public init(searchText: String, settings: SearchQuerySettings) {
         self.searchText = searchText
+        self.settings = settings
         super.init()
         parse()
     }
@@ -70,10 +75,10 @@ public final class SearchQuery: NSObject {
     }
     
     private func checkForTagOrLocalizedTag(with keyword: String) -> String? {
-        if let tag = keyword.lowercased().suffix(afterPrefix: String.searchOperatorForTags.tagsKeyword.lowercased()) {
+        if let tag = keyword.lowercased().suffix(afterPrefix: settings.tagsKeyword.lowercased()) {
             return tag
         }
-        if let tag = keyword.lowercased().suffix(afterPrefix: String.searchOperatorForTags.localizedTagKeyword.lowercased()) {
+        if let tag = keyword.lowercased().suffix(afterPrefix: settings.localizedTagKeyword.lowercased()) {
             return tag
         }
         
