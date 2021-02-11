@@ -6,7 +6,7 @@ import SimplenoteSearch
 //
 class NSPredicateSimplenoteTests: XCTestCase {
     
-    var searchSettings = SearchQuerySettings(tagsKeyword: "tag:", localizedTagKeyword: NSLocalizedString("tag:", comment: "Search Operator for tags. Please preserve the semicolons when translating!"))
+    let searchSettings = SearchQuerySettings(tagsKeyword: "tag:", localizedTagKeyword: NSLocalizedString("tag:", comment: "Search Operator for tags. Please preserve the semicolons when translating!"))
 
     /// Verifies that `NSPredicate.predicateForNotes(searchText:)` match entities that contain a single specified keyword
     ///

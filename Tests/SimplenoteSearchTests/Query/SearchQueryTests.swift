@@ -5,7 +5,7 @@ import SimplenoteSearch
 //
 class SearchQueryTests: XCTestCase {
 
-    var searchSettings = SearchQuerySettings(tagsKeyword: "tag:", localizedTagKeyword: NSLocalizedString("tag:", comment: "Search Operator for tags. Please preserve the semicolons when translating!"))
+    let searchSettings = SearchQuerySettings(tagsKeyword: "tag:", localizedTagKeyword: NSLocalizedString("tag:", comment: "Search Operator for tags. Please preserve the semicolons when translating!"))
     
     /// Verifies that query without a search text is empty
     ///

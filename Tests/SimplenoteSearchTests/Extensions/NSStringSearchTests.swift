@@ -6,7 +6,7 @@ import SimplenoteSearch
 //
 class StringSimplenoteTests: XCTestCase {
     
-    var searchSettings = SearchQuerySettings(tagsKeyword: "tag:", localizedTagKeyword: NSLocalizedString("tag:", comment: "Search Operator for tags. Please preserve the semicolons when translating!"))
+    let searchSettings = SearchQuerySettings(tagsKeyword: "tag:", localizedTagKeyword: NSLocalizedString("tag:", comment: "Search Operator for tags. Please preserve the semicolons when translating!"))
 
     /// Verifies that `replaceLastWord(:)` returns the new word, whenever the receiver was empty
     ///
