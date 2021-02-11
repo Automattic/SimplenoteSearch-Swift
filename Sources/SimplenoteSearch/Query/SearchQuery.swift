@@ -49,7 +49,7 @@ public final class SearchQuery: NSObject {
     
     /// Localized Tag search operator seach settings
     ///
-    public var settings: SearchQuerySettings
+    public let settings: SearchQuerySettings
 
     /// Init with a search text
     ///
