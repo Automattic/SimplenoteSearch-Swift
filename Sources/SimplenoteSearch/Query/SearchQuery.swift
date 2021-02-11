@@ -46,12 +46,16 @@ public final class SearchQuery: NSObject {
             return value
         }
     }
+    
+    /// Localized Tag search operator seach settings
+    ///
+    public let settings: SearchQuerySettings
 
     /// Init with a search text
     ///
-    @objc
-    public init(searchText: String) {
+    public init(searchText: String, settings: SearchQuerySettings) {
         self.searchText = searchText
+        self.settings = settings
         super.init()
         parse()
     }
@@ -60,13 +64,23 @@ public final class SearchQuery: NSObject {
         let keywords = searchText.trimmingCharacters(in: .whitespacesAndNewlines).components(separatedBy: .whitespaces)
 
         for keyword in keywords where keyword.isEmpty == false {
-            guard let tag = keyword.lowercased().suffix(afterPrefix: String.searchOperatorForTags.lowercased()) else {
+            guard let tag = extractTagKeyword(from:keyword) else {
                 items.append(.keyword(keyword))
                 continue
             }
-
             items.append(.tag(tag))
         }
+    }
+    
+    private func extractTagKeyword(from keyword: String) -> String? {
+        let tagPrefixes = [settings.tagsKeyword.lowercased(), settings.localizedTagKeyword.lowercased()]
+        
+        for prefix in tagPrefixes {
+            if let tag = keyword.lowercased().suffix(afterPrefix: prefix) {
+                return tag
+            }
+        }
+        return nil
     }
 
     public override func isEqual(_ object: Any?) -> Bool {
@@ -75,5 +89,15 @@ public final class SearchQuery: NSObject {
         }
 
         return items == object.items
+    }
+}
+
+public struct SearchQuerySettings {
+    public let tagsKeyword: String
+    public let localizedTagKeyword: String
+    
+    public init(tagsKeyword: String, localizedTagKeyword: String){
+        self.tagsKeyword = tagsKeyword
+        self.localizedTagKeyword = localizedTagKeyword
     }
 }

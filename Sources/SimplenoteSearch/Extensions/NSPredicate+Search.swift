@@ -30,9 +30,8 @@ extension NSPredicate {
 
     /// Returns a collection of NSPredicates that will match, as a compound, a given Search Query
     ///
-    @objc(predicateForSearchText:)
-    public static func predicateForNotes(searchText: String) -> NSPredicate {
-        return predicateForNotes(query: SearchQuery(searchText: searchText))
+    public static func predicateForNotes(searchText: String, settings: SearchQuerySettings) -> NSPredicate {
+        return predicateForNotes(query: SearchQuery(searchText: searchText, settings: settings))
     }
 
     /// Returns a NSPredicate that will match Notes with the specified `deleted` flag
@@ -107,9 +106,8 @@ extension NSPredicate {
 
     /// Returns a NSPredicate that will match Tags with a given Keyword
     ///
-    @objc
-    public static func predicateForTag(keyword: String) -> NSPredicate {
-        return predicateForTags(in: SearchQuery(searchText: keyword))
+    public static func predicateForTag(keyword: String, settings: SearchQuerySettings) -> NSPredicate {
+        return predicateForTags(in: SearchQuery(searchText: keyword, settings: settings))
     }
 }
 
