@@ -53,7 +53,6 @@ public final class SearchQuery: NSObject {
 
     /// Init with a search text
     ///
-    @objc
     public init(searchText: String, settings: SearchQuerySettings) {
         self.searchText = searchText
         self.settings = settings
@@ -93,13 +92,12 @@ public final class SearchQuery: NSObject {
     }
 }
 
-public class SearchQuerySettings: NSObject {
+public struct SearchQuerySettings {
     public let tagsKeyword: String
     public let localizedTagKeyword: String
     
     public init(tagsKeyword: String, localizedTagKeyword: String){
         self.tagsKeyword = tagsKeyword
         self.localizedTagKeyword = localizedTagKeyword
-        super.init()
     }
 }
